@@ -3,9 +3,10 @@ import tkinter as tk
 from tkinter import messagebox
 class MainButton:
     
-    def __init__(self,frame, text, func,row,column,height,width):
+    def __init__(self,frame, text, func,row,column,height,width,sticky):
         tk.Grid.rowconfigure(frame, row, weight=1)
         tk.Grid.columnconfigure(frame, column, weight=1)
+        self.sticky=sticky
         self.button = tk.Button(
             frame,
             text=text,
@@ -16,7 +17,7 @@ class MainButton:
             width=width
             )
         self.flag=0
-        self.button.grid(row=row,column=column ,sticky="nw")
+        self.button.grid(row=row,column=column ,sticky=self.sticky)
         
  
     def changeButtonState(self,state):

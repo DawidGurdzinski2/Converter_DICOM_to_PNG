@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
-
+from DicomStruct import *
 
 
 
@@ -8,15 +8,43 @@ class ConversionFrame:
 
 
     def __init__(self,window,height,width,row,column):
-        self.window=tk.Frame(window)
-        
-        
+        self.windowUp=window
+        self.window=tk.Frame(self.windowUp)
         self.height=height
         self.width=width
-        
-        self.window.grid(row=row,column=column,sticky="swe")
+        self.window.grid(row=2,column=0,columnspan=2,sticky="swe")
         self.createScrollBar()
+        self.dicomObjects=[]
+        self.row=0
+        #self.gg=tk.Label(self.frame,text="test")
+        #self.gg.grid(row=1,column=0)
 
+    def addDicomFile(self,path):
+        self.dicomObjects.append(DicomStruct(self.frame,2,75,self.row,0,path,0))
+        self.row+=1
+        self.UpdateDataScrollbar()
+        self.window.update_idletasks()
+    
+    def getSelectedFiles(self):
+        temparray=[]
+        for file in self.dicomObjects:
+            if(file.state):
+                temparray.append(file.path)
+        return temparray
+
+    def getFiles(self):
+        temparray=[]
+        for file in self.dicomObjects:
+            temparray.append(file.path)
+        return temparray
+        
+    def destroyDicomObjects(self):
+        self.row=0
+        self.window.destroy()
+        self.window=tk.Frame(self.windowUp)
+        self.window.grid(row=2,column=0,columnspan=2,sticky="swe")
+        self.createScrollBar()
+        
 
     def createScrollBar(self):
         self.scrollframe=tk.Frame(self.window,bg="white",bd=5)
@@ -37,3 +65,4 @@ class ConversionFrame:
         self.canvas.update_idletasks()
         self.canvas.config(scrollregion=self.canvas.bbox("all"))
         
+    
