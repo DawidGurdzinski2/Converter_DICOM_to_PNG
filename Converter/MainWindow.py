@@ -8,22 +8,23 @@ from PIL import Image
 class MainWindow:
 
 
-    def __init__(self,window):
+    def __init__(self,window):#inicjalizacja
         self.window=window
-        self.initialdir="/home/dawid/Desktop/Programing and other" #linux
-        #self.initModules()
+        self.initialdir="/home/dawid/Desktop" #linux
         self.filetypes=(  ("Dicom Files", "*.dcm*"),("All Files", "*.*"))
         self.frame = tk.Frame(self.window,bg="white",bd=5)
         tk.Grid.rowconfigure(self.window,0,weight=1)
         tk.Grid.columnconfigure(self.window,0,weight=1)
         self.frame.grid(row=0,column=0,sticky="nswe")
         self.createButtons()
+        self.destinationfolder="/home/dawid/Desktop/"
+        self.format =".jpg"
         self.cframe=ConversionFrame(self.frame,200,200,2,0)
        
    
   
 
-    def createButtons(self):
+    def createButtons(self):#tworzy przyciski w oknie
         data = [[self.frame,"Add File", lambda: self.addFiles(), 0,0,8,16,"nw"],
                     [self.frame,"Convert", lambda: self.converFiles() ,1,0,8,16,"nw"],
                     [self.frame,"Delete Unselected Files", lambda: self.deleteUnSelectedFiles() ,0,1,8,24,"se"],
@@ -33,7 +34,7 @@ class MainWindow:
 
 
 
-    def addFiles(self):
+    def addFiles(self):#sluzy do dodawania plikow
         try:
             file_path=fd.askopenfile(initialdir=self.initialdir,filetypes=self.filetypes).name
             print(file_path)
@@ -41,14 +42,12 @@ class MainWindow:
                print("jest juz")
                
             elif(len(str(file_path))>2):
-                #print(len(str(file_path)))
                 self.cframe.addDicomFile(file_path)
                 self.window.update_idletasks()
         except:
             pass
 
-    def deleteUnSelectedFiles(self):
-
+    def deleteUnSelectedFiles(self):#usuwania nie oznaczone dicom w liscie
         temparray=self.cframe.getSelectedFiles()
         self.cframe.destroyDicomObjects()
         self.cframe.dicomObjects.clear()
@@ -59,16 +58,28 @@ class MainWindow:
         except:
             pass
     
-    def deleteFiles(self):
+    def deleteFiles(self):#usuwa wszystkie pliki dicom na lisice
         self.cframe.destroyDicomObjects()
         self.cframe.dicomObjects.clear()
         self.window.update_idletasks()
-            
+    
+    def chooseDestinationFolder(self):# wybiera folder do zapisu
+        self.destinationfolder=fd.askdirectory(initialdir=self.initialdir)
         
-    def converFiles(self):
+    def chooseFormat(self):# wybieramy format jpg lub png  (bazowo jest png ale mozemy zmienic go potwierdzajac w oknie na format jpg)
+        answer = tk.messagebox.askquestion(title='ask question',message='Do you want save this in JPG format')
+        if(answer == 'yes'):
+            self.format=".jpg"
+        else:
+            self.format=".png"
+        print(self.format)
+
+    def converFiles(self):# funkcja wcisniecia przycisku Convert ,Wybieramy tu folder do zapisu,wybieramy format, konwertujemy i zapisujemy zdjecia
+        self.chooseFormat()
+        self.chooseDestinationFolder()
         self.readDicomFile()
 
-    def readDicomFile(self,path):
+    def readDicomFile(self): # zamienia wybrane pliki dicom na zdjecia w formacie jpg lub png
         dicom_images=[]
         for path in self.cframe.getSelectedFiles():
             dicom=pydicom.dcmread(path)
@@ -77,6 +88,16 @@ class MainWindow:
             finalImage=np.uint8(rescaledImage)
             finalImage=Image.fromarray(finalImage)
             finalImage.show()
-            finalImage.save()
+            finalImage.save(self.destinationfolder+self.takePicturename(path)+self.format)
 
     
+    def takePicturename(self,path): # wyłuskuje imie pliku z scieżki w któ©ej sie znajduje
+        tempstring=""
+        for i in reversed(path):
+            if(i =='/'):
+                break
+            tempstring=tempstring+i
+        tempstring=tempstring[::-1]
+        for i in range(4):
+            tempstring=tempstring.rstrip(tempstring[-1])
+        return tempstring 

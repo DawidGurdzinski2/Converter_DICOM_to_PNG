@@ -1,7 +1,7 @@
 import tkinter as tk
 
 from tkinter import messagebox
-class MainButton:
+class MainButton:# nic innego jak tworzenie przycisku
     
     def __init__(self,frame, text, func,row,column,height,width,sticky):
         tk.Grid.rowconfigure(frame, row, weight=1)

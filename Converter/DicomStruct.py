@@ -19,7 +19,7 @@ class DicomStruct:
         self.label.grid(row=0,column=0,sticky="nswe")
         self.createCheckbox()
 
-    def createCheckbox(self):
+    def createCheckbox(self):# struktura dicomstructa w frame z srcoolbarem
         check_button =tk.Checkbutton(self.frame,
                            text="Select File",
                            variable=self.x,
@@ -36,7 +36,7 @@ class DicomStruct:
                            compound='left')
         check_button.grid(row=0,column=1)
     
-    def changeState(self):
+    def changeState(self):#sprawdza czy obiekt dicom został wybrany do conwersji/lub usuniecia
         if(self.x.get()):
             self.state=1
         else:
