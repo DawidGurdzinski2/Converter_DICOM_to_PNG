@@ -10,14 +10,14 @@ class MainWindow:
 
     def __init__(self,window):#inicjalizacja
         self.window=window
-        self.initialdir="/home/dawid/Desktop" #linux
+        self.initialdir="/home/" #linux
         self.filetypes=(  ("Dicom Files", "*.dcm*"),("All Files", "*.*"))
         self.frame = tk.Frame(self.window,bg="white",bd=5)
         tk.Grid.rowconfigure(self.window,0,weight=1)
         tk.Grid.columnconfigure(self.window,0,weight=1)
         self.frame.grid(row=0,column=0,sticky="nswe")
         self.createButtons()
-        self.destinationfolder="/home/dawid/Desktop/"
+        self.destinationfolder="/home/"
         self.format =".jpg"
         self.cframe=ConversionFrame(self.frame,200,200,2,0)
        
